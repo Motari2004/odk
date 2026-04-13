@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Legacy Schools - Exam Management System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: white;
+            border-radius: 20px 20px 0 0;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            color: #1e3c72;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .form-container {
+            background: white;
+            padding: 30px;
+            border-radius: 0 0 20px 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 12px;
+        }
+        
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        
+        input[type="text"],
+        input[type="number"],
+        textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 15px;
+        }
+        
+        input:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #2a5298;
+        }
+        
+        .radio-group,
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 5px;
+        }
+        
+        .radio-option,
+        .checkbox-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .radio-option input,
+        .checkbox-option input {
+            width: auto;
+            margin: 0;
+        }
+        
+        .radio-option label,
+        .checkbox-option label {
+            margin: 0;
+            font-weight: normal;
+        }
+        
+        .form-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+        
+        .form-section h3 {
+            margin: 0;
+            font-size: 18px;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            border: none;
+            padding: 14px 30px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 100%;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+        }
+        
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        .footer {
+            margin-top: 20px;
+            text-align: center;
+            color: rgba(255,255,255,0.7);
+            font-size: 12px;
+        }
+        
+        @media (max-width: 600px) {
+            .radio-group,
+            .checkbox-group {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📝 Legacy Schools Exam Management System</h1>
+            <p>Fill out the form below</p>
+        </div>
+        
+        <div class="form-container">
+            <div id="successMessage" class="success-message">
+                ✓ Form submitted successfully!
+            </div>
+            
+            <form id="examForm">
+                
+                <div class="form-group">
+                    <label>Select your role</label>
+                    <div class="radio-group">
+                        
+                    <div class="radio-option">
+                        <input type="radio" id="field_0_student" name="/data/role" value="student">
+                        <label for="field_0_student">Student</label>
+                    </div>
+                
+                    <div class="radio-option">
+                        <input type="radio" id="field_0_teacher" name="/data/role" value="teacher">
+                        <label for="field_0_teacher">Teacher</label>
+                    </div>
+                
+                    </div>
+                </div>
+            
+                <div class="form-group">
+                    <label>approve subject selection?</label>
+                    <div class="radio-group">
+                        
+                    <div class="radio-option">
+                        <input type="radio" id="field_1_yes" name="/data/teacher_section/approve" value="yes">
+                        <label for="field_1_yes">Yes</label>
+                    </div>
+                
+                    <div class="radio-option">
+                        <input type="radio" id="field_1_no" name="/data/teacher_section/approve" value="no">
+                        <label for="field_1_no">No</label>
+                    </div>
+                
+                    </div>
+                </div>
+            
+                <div class="form-group">
+                    <label>What is 12*8?</label>
+                    <div class="radio-group">
+                        
+                    <div class="radio-option">
+                        <input type="radio" id="field_2_A" name="/data/mat_q/mat_q1" value="A">
+                        <label for="field_2_A">128</label>
+                    </div>
+                
+                    <div class="radio-option">
+                        <input type="radio" id="field_2_B" name="/data/mat_q/mat_q1" value="B">
+                        <label for="field_2_B">96</label>
+                    </div>
+                
+                    <div class="radio-option">
+                        <input type="radio" id="field_2_C" name="/data/mat_q/mat_q1" value="C">
+                        <label for="field_2_C">56</label>
+                    </div>
+                
+                    <div class="radio-option">
+                        <input type="radio" id="field_2_D" name="/data/mat_q/mat_q1" value="D">
+                        <label for="field_2_D">20</label>
+                    </div>
+                
+                    </div>
+                </div>
+            
+                <div class="form-group">
+                    <label>What is the square root of 81?</label>
+                    <div class="radio-group">
+                        
+                    <div class="radio-option">
+                        <input type="radio" id="field_3_A" name="/data/mat_q/mat_q2" value="A">
+                        <label for="field_3_A">9</label>
+                    </div>
+                
+                    <div class="radio-option">
+                        <input type="radio" id="field_3_B" name="/data/mat_q/mat_q2" value="B">
+                        <label for="field_3_B">64</label>
+                    </div>
+                
+                    <div class="radio-option">
+                        <input type="radio" id="field_3_C" name="/data/mat_q/mat_q2" value="C">
+                        <label for="field_3_C">40.5</label>
+                    </div>
+                
+                    <div class="radio-option">
+                        <input type="radio" id="field_3_D" name="/data/mat_q/mat_q2" value="D">
+                        <label for="field_3_D">81</label>
+                    </div>
+                
+                    </div>
+                </div>
+            
+                <div class="form-group">
+                    <label>Do you enjoy solving word problems?</label>
+                    <div class="radio-group">
+                        
+                    <div class="radio-option">
+                        <input type="radio" id="field_4_yes" name="/data/mat_q/mat_q4" value="yes">
+                        <label for="field_4_yes">Yes</label>
+                    </div>
+                
+                    <div class="radio-option">
+                        <input type="radio" id="field_4_no" name="/data/mat_q/mat_q4" value="no">
+                        <label for="field_4_no">No</label>
+                    </div>
+                
+                    </div>
+                </div>
+            
+                <div class="form-group">
+                    <label>What is the plural of "book"?</label>
+                    <div class="radio-group">
+                        
+                    <div class="radio-option">
+                        <input type="radio" id="field_5_A" name="/data/eng_q/eng_q1" value="A">
+                        <label for="field_5_A">book</label>
+                    </div>
+                
+                    <div class="radio-option">
+                        <input type="radio" id="field_5_B" name="/data/eng_q/eng_q1" value="B">
+                        <label for="field_5_B">books</label>
+                    </div>
+                
+                    <div class="radio-option">
+                        <input type="radio" id="field_5_C" name="/data/eng_q/eng_q1" value="C">
+                        <label for="field_5_C">booked</label>
+                    </div>
+                
+                    <div class="radio-option">
+                        <input type="radio" id="field_5_D" name="/data/eng_q/eng_q1" value="D">
+                        <label for="field_5_D">bookes</label>
+                    </div>
+                
+                    </div>
+                </div>
+            
+                <div class="form-group">
+                    <label>How many letters are there in the alphabet?</label>
+                    <div class="radio-group">
+                        
+                    <div class="radio-option">
+                        <input type="radio" id="field_6_A" name="/data/eng_q/eng_q2" value="A">
+                        <label for="field_6_A">5</label>
+                    </div>
+                
+                    <div class="radio-option">
+                        <input type="radio" id="field_6_B" name="/data/eng_q/eng_q2" value="B">
+                        <label for="field_6_B">26</label>
+                    </div>
+                
+                    <div class="radio-option">
+                        <input type="radio" id="field_6_C" name="/data/eng_q/eng_q2" value="C">
+                        <label for="field_6_C">20</label>
+                    </div>
+                
+                    <div class="radio-option">
+                        <input type="radio" id="field_6_D" name="/data/eng_q/eng_q2" value="D">
+                        <label for="field_6_D">21</label>
+                    </div>
+                
+                    </div>
+                </div>
+            
+                <div class="form-group">
+                    <label>Do you read storybooks at home?</label>
+                    <div class="radio-group">
+                        
+                    <div class="radio-option">
+                        <input type="radio" id="field_7_yes" name="/data/eng_q/eng_q4" value="yes">
+                        <label for="field_7_yes">Yes</label>
+                    </div>
+                
+                    <div class="radio-option">
+                        <input type="radio" id="field_7_no" name="/data/eng_q/eng_q4" value="no">
+                        <label for="field_7_no">No</label>
+                    </div>
+                
+                    </div>
+                </div>
+            
+                <div class="form-group">
+                    <label>Which planet is known as the red planet?</label>
+                    <div class="radio-group">
+                        
+                    <div class="radio-option">
+                        <input type="radio" id="field_8_A" name="/data/scie_q/scie_q1" value="A">
+                        <label for="field_8_A">mars</label>
+                    </div>
+                
+                    <div class="radio-option">
+                        <input type="radio" id="field_8_B" name="/data/scie_q/scie_q1" value="B">
+                        <label for="field_8_B">jupiter</label>
+                    </div>
+                
+                    <div class="radio-option">
+                        <input type="radio" id="field_8_C" name="/data/scie_q/scie_q1" value="C">
+                        <label for="field_8_C">saturn</label>
+                    </div>
+                
+                    <div class="radio-option">
+                        <input type="radio" id="field_8_D" name="/data/scie_q/scie_q1" value="D">
+                        <label for="field_8_D">earth</label>
+                    </div>
+                
+                    </div>
+                </div>
+            
+                <div class="form-group">
+                    <label>What is the capital city of kenya?</label>
+                    <div class="radio-group">
+                        
+                    <div class="radio-option">
+                        <input type="radio" id="field_9_A" name="/data/sst_q/sst_q1" value="A">
+                        <label for="field_9_A">Mombasa</label>
+                    </div>
+                
+                    <div class="radio-option">
+                        <input type="radio" id="field_9_B" name="/data/sst_q/sst_q1" value="B">
+                        <label for="field_9_B">Kisumu</label>
+                    </div>
+                
+                    <div class="radio-option">
+                        <input type="radio" id="field_9_C" name="/data/sst_q/sst_q1" value="C">
+                        <label for="field_9_C">Nairobi</label>
+                    </div>
+                
+                    <div class="radio-option">
+                        <input type="radio" id="field_9_D" name="/data/sst_q/sst_q1" value="D">
+                        <label for="field_9_D">Nakuru</label>
+                    </div>
+                
+                    </div>
+                </div>
+            
+                <div class="form-group">
+                    <label>How many counties are there in kenya?</label>
+                    <div class="radio-group">
+                        
+                    <div class="radio-option">
+                        <input type="radio" id="field_10_A" name="/data/sst_q/sst_q2" value="A">
+                        <label for="field_10_A">20</label>
+                    </div>
+                
+                    <div class="radio-option">
+                        <input type="radio" id="field_10_B" name="/data/sst_q/sst_q2" value="B">
+                        <label for="field_10_B">7</label>
+                    </div>
+                
+                    <div class="radio-option">
+                        <input type="radio" id="field_10_C" name="/data/sst_q/sst_q2" value="C">
+                        <label for="field_10_C">47</label>
+                    </div>
+                
+                    <div class="radio-option">
+                        <input type="radio" id="field_10_D" name="/data/sst_q/sst_q2" value="D">
+                        <label for="field_10_D">45</label>
+                    </div>
+                
+                    </div>
+                </div>
+            
+                <div class="form-group">
+                    <label>Select your subjects</label>
+                    <div class="checkbox-group">
+                        
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="field_11_mat" name="/data/student_section/sub_selection/subjects" value="mat">
+                        <label for="field_11_mat">Math</label>
+                    </div>
+                
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="field_11_eng" name="/data/student_section/sub_selection/subjects" value="eng">
+                        <label for="field_11_eng">English</label>
+                    </div>
+                
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="field_11_scie" name="/data/student_section/sub_selection/subjects" value="scie">
+                        <label for="field_11_scie">Science</label>
+                    </div>
+                
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="field_11_sst" name="/data/student_section/sub_selection/subjects" value="sst">
+                        <label for="field_11_sst">Social Studies</label>
+                    </div>
+                
+                    </div>
+                </div>
+            
+                <div class="form-group">
+                    <label for="field_12">Enter student Name</label>
+                    <input type="text" id="field_12" name="/data/student_section/student_name">
+                </div>
+            
+                <div class="form-group">
+                    <label for="field_13">Enter Admission Number</label>
+                    <input type="number" id="field_13" name="/data/student_section/adm_no">
+                </div>
+            
+                <div class="form-group">
+                    <label for="field_14">Teacher comment</label>
+                    <input type="text" id="field_14" name="/data/teacher_section/comment">
+                </div>
+            
+                <div class="form-group">
+                    <label for="field_15">Write one example of a fraction</label>
+                    <input type="text" id="field_15" name="/data/mat_q/mat_q3">
+                </div>
+            
+                <div class="form-group">
+                    <label for="field_16">Write a sentence using the word "handsome"</label>
+                    <input type="text" id="field_16" name="/data/eng_q/eng_q3">
+                </div>
+            
+                <div class="form-group">
+                    <label for="field_17">Name one use of water in human life.</label>
+                    <input type="text" id="field_17" name="/data/scie_q/scie_q2">
+                </div>
+            
+                <div class="form-group">
+                    <label for="field_18">Name one source of vitamin c</label>
+                    <input type="text" id="field_18" name="/data/scie_q/scie_q3">
+                </div>
+            
+                <div class="form-group">
+                    <label for="field_19">At what age does a child start shedding off their milk teeth?</label>
+                    <input type="text" id="field_19" name="/data/scie_q/scie_q4">
+                </div>
+            
+                <div class="form-group">
+                    <label for="field_20">Name one traditional leader of any kenyan community.</label>
+                    <input type="text" id="field_20" name="/data/sst_q/sst_q3">
+                </div>
+            
+                <div class="form-group">
+                    <label for="field_21">Which year did kenya gain independence?</label>
+                    <input type="text" id="field_21" name="/data/sst_q/sst_q4">
+                </div>
+            
+                <div class="form-section">
+                    <h3>📖 Mathematics</h3>
+                </div>
+            
+                <div class="form-section">
+                    <h3>📖 English</h3>
+                </div>
+            
+                <div class="form-section">
+                    <h3>📖 Science</h3>
+                </div>
+            
+                <div class="form-section">
+                    <h3>📖 Social Studies</h3>
+                </div>
+            
+                <button type="submit">✓ Submit</button>
+            </form>
+        </div>
+        
+        <div class="footer">
+            <p>Legacy Schools Exam Management System</p>
+        </div>
+    </div>
+    
+    <script>
+        document.getElementById('examForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const data = {};
+            formData.forEach((value, key) => {
+                if (data[key]) {
+                    if (!Array.isArray(data[key])) {
+                        data[key] = [data[key]];
+                    }
+                    data[key].push(value);
+                } else {
+                    data[key] = value;
+                }
+            });
+            
+            data['_submitted_at'] = new Date().toISOString();
+            
+            // Save and download
+            const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `submission_${Date.now()}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            document.getElementById('successMessage').style.display = 'block';
+            setTimeout(() => {
+                document.getElementById('successMessage').style.display = 'none';
+                this.reset();
+            }, 3000);
+        });
+    </script>
+</body>
+</html>
