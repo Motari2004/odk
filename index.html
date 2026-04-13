@@ -41,6 +41,16 @@
             font-size: 14px;
         }
         
+        .live-badge {
+            display: inline-block;
+            background: #28a745;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            margin-top: 10px;
+        }
+        
         .form-container {
             background: white;
             padding: 30px;
@@ -52,6 +62,11 @@
             padding: 15px;
             background: #f9f9f9;
             border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+        
+        .form-group:hover {
+            background: #f5f5f5;
         }
         
         label {
@@ -59,22 +74,33 @@
             font-weight: 600;
             margin-bottom: 10px;
             color: #333;
+            font-size: 15px;
+        }
+        
+        .required-star {
+            color: #e74c3c;
+            margin-left: 5px;
         }
         
         input[type="text"],
         input[type="number"],
-        textarea {
+        textarea,
+        select {
             width: 100%;
             padding: 12px 15px;
             border: 2px solid #e0e0e0;
             border-radius: 10px;
             font-size: 15px;
+            transition: all 0.3s ease;
+            font-family: inherit;
         }
         
         input:focus,
-        textarea:focus {
+        textarea:focus,
+        select:focus {
             outline: none;
             border-color: #2a5298;
+            box-shadow: 0 0 0 3px rgba(42, 82, 152, 0.1);
         }
         
         .radio-group,
@@ -96,12 +122,14 @@
         .checkbox-option input {
             width: auto;
             margin: 0;
+            cursor: pointer;
         }
         
         .radio-option label,
         .checkbox-option label {
             margin: 0;
             font-weight: normal;
+            cursor: pointer;
         }
         
         .form-section {
@@ -127,10 +155,21 @@
             border-radius: 10px;
             cursor: pointer;
             width: 100%;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
         
         button:hover {
             transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
         }
         
         .success-message {
@@ -140,6 +179,17 @@
             border-radius: 10px;
             margin-bottom: 20px;
             display: none;
+            border-left: 4px solid #28a745;
+        }
+        
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+            border-left: 4px solid #dc3545;
         }
         
         .footer {
@@ -150,6 +200,9 @@
         }
         
         @media (max-width: 600px) {
+            .form-container {
+                padding: 20px;
+            }
             .radio-group,
             .checkbox-group {
                 flex-direction: column;
@@ -163,408 +216,404 @@
         <div class="header">
             <h1>📝 Legacy Schools Exam Management System</h1>
             <p>Fill out the form below</p>
+      
         </div>
         
         <div class="form-container">
             <div id="successMessage" class="success-message">
-                ✓ Form submitted successfully!
+                ✓ Form submitted successfully! Your responses have been recorded.
+            </div>
+            <div id="errorMessage" class="error-message">
+                ⚠️ Please fill out all required fields.
             </div>
             
             <form id="examForm">
-                
+                <!-- Role Selection -->
                 <div class="form-group">
-                    <label>Select your role</label>
+                    <label>Select your role <span class="required-star">*</span></label>
                     <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" id="role_student" name="role" value="student" required>
+                            <label for="role_student">Student</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="role_teacher" name="role" value="teacher" required>
+                            <label for="role_teacher">Teacher</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Student Section -->
+                <div id="studentSection" style="display: none;">
+                    <div class="form-section">
+                        <h3>📚 Student Information</h3>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="student_name">Enter Student Name <span class="required-star">*</span></label>
+                        <input type="text" id="student_name" name="student_name">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="adm_no">Enter Admission Number <span class="required-star">*</span></label>
+                        <input type="number" id="adm_no" name="adm_no">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Select your subjects <span class="required-star">*</span></label>
+                        <div class="checkbox-group">
+                            <div class="checkbox-option">
+                                <input type="checkbox" id="subject_mat" name="subjects" value="mat">
+                                <label for="subject_mat">Mathematics</label>
+                            </div>
+                            <div class="checkbox-option">
+                                <input type="checkbox" id="subject_eng" name="subjects" value="eng">
+                                <label for="subject_eng">English</label>
+                            </div>
+                            <div class="checkbox-option">
+                                <input type="checkbox" id="subject_scie" name="subjects" value="scie">
+                                <label for="subject_scie">Science</label>
+                            </div>
+                            <div class="checkbox-option">
+                                <input type="checkbox" id="subject_sst" name="subjects" value="sst">
+                                <label for="subject_sst">Social Studies</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Teacher Section -->
+                <div id="teacherSection" style="display: none;">
+                    <div class="form-section">
+                        <h3>👨‍🏫 Teacher Approval</h3>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Approve subject selection? <span class="required-star">*</span></label>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" id="approve_yes" name="approve" value="yes">
+                                <label for="approve_yes">Yes</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="approve_no" name="approve" value="no">
+                                <label for="approve_no">No</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="comment">Teacher Comment</label>
+                        <textarea id="comment" name="comment" rows="3" placeholder="Add any comments here..."></textarea>
+                    </div>
+                </div>
+                
+                <!-- Exam Sections -->
+                <div id="examSections" style="display: none;">
+                    <!-- Mathematics -->
+                    <div id="mathSection" style="display: none;">
+                        <div class="form-section">
+                            <h3>🧮 Mathematics</h3>
+                        </div>
                         
-                    <div class="radio-option">
-                        <input type="radio" id="field_0_student" name="/data/role" value="student">
-                        <label for="field_0_student">Student</label>
-                    </div>
-                
-                    <div class="radio-option">
-                        <input type="radio" id="field_0_teacher" name="/data/role" value="teacher">
-                        <label for="field_0_teacher">Teacher</label>
-                    </div>
-                
-                    </div>
-                </div>
-            
-                <div class="form-group">
-                    <label>approve subject selection?</label>
-                    <div class="radio-group">
+                        <div class="form-group">
+                            <label>What is 12 × 8? <span class="required-star">*</span></label>
+                            <div class="radio-group">
+                                <div class="radio-option"><input type="radio" name="mat_q1" value="A"><label>A) 128</label></div>
+                                <div class="radio-option"><input type="radio" name="mat_q1" value="B"><label>B) 96</label></div>
+                                <div class="radio-option"><input type="radio" name="mat_q1" value="C"><label>C) 56</label></div>
+                                <div class="radio-option"><input type="radio" name="mat_q1" value="D"><label>D) 20</label></div>
+                            </div>
+                        </div>
                         
-                    <div class="radio-option">
-                        <input type="radio" id="field_1_yes" name="/data/teacher_section/approve" value="yes">
-                        <label for="field_1_yes">Yes</label>
-                    </div>
-                
-                    <div class="radio-option">
-                        <input type="radio" id="field_1_no" name="/data/teacher_section/approve" value="no">
-                        <label for="field_1_no">No</label>
-                    </div>
-                
-                    </div>
-                </div>
-            
-                <div class="form-group">
-                    <label>What is 12*8?</label>
-                    <div class="radio-group">
+                        <div class="form-group">
+                            <label>What is the square root of 81? <span class="required-star">*</span></label>
+                            <div class="radio-group">
+                                <div class="radio-option"><input type="radio" name="mat_q2" value="A"><label>A) 9</label></div>
+                                <div class="radio-option"><input type="radio" name="mat_q2" value="B"><label>B) 64</label></div>
+                                <div class="radio-option"><input type="radio" name="mat_q2" value="C"><label>C) 40.5</label></div>
+                                <div class="radio-option"><input type="radio" name="mat_q2" value="D"><label>D) 81</label></div>
+                            </div>
+                        </div>
                         
-                    <div class="radio-option">
-                        <input type="radio" id="field_2_A" name="/data/mat_q/mat_q1" value="A">
-                        <label for="field_2_A">128</label>
-                    </div>
-                
-                    <div class="radio-option">
-                        <input type="radio" id="field_2_B" name="/data/mat_q/mat_q1" value="B">
-                        <label for="field_2_B">96</label>
-                    </div>
-                
-                    <div class="radio-option">
-                        <input type="radio" id="field_2_C" name="/data/mat_q/mat_q1" value="C">
-                        <label for="field_2_C">56</label>
-                    </div>
-                
-                    <div class="radio-option">
-                        <input type="radio" id="field_2_D" name="/data/mat_q/mat_q1" value="D">
-                        <label for="field_2_D">20</label>
-                    </div>
-                
-                    </div>
-                </div>
-            
-                <div class="form-group">
-                    <label>What is the square root of 81?</label>
-                    <div class="radio-group">
+                        <div class="form-group">
+                            <label for="mat_q3">Write one example of a fraction</label>
+                            <input type="text" id="mat_q3" name="mat_q3">
+                        </div>
                         
-                    <div class="radio-option">
-                        <input type="radio" id="field_3_A" name="/data/mat_q/mat_q2" value="A">
-                        <label for="field_3_A">9</label>
+                        <div class="form-group">
+                            <label>Do you enjoy solving word problems?</label>
+                            <div class="radio-group">
+                                <div class="radio-option"><input type="radio" name="mat_q4" value="yes"><label>Yes</label></div>
+                                <div class="radio-option"><input type="radio" name="mat_q4" value="no"><label>No</label></div>
+                            </div>
+                        </div>
                     </div>
-                
-                    <div class="radio-option">
-                        <input type="radio" id="field_3_B" name="/data/mat_q/mat_q2" value="B">
-                        <label for="field_3_B">64</label>
-                    </div>
-                
-                    <div class="radio-option">
-                        <input type="radio" id="field_3_C" name="/data/mat_q/mat_q2" value="C">
-                        <label for="field_3_C">40.5</label>
-                    </div>
-                
-                    <div class="radio-option">
-                        <input type="radio" id="field_3_D" name="/data/mat_q/mat_q2" value="D">
-                        <label for="field_3_D">81</label>
-                    </div>
-                
-                    </div>
-                </div>
-            
-                <div class="form-group">
-                    <label>Do you enjoy solving word problems?</label>
-                    <div class="radio-group">
+                    
+                    <!-- English -->
+                    <div id="englishSection" style="display: none;">
+                        <div class="form-section">
+                            <h3>📖 English</h3>
+                        </div>
                         
-                    <div class="radio-option">
-                        <input type="radio" id="field_4_yes" name="/data/mat_q/mat_q4" value="yes">
-                        <label for="field_4_yes">Yes</label>
-                    </div>
-                
-                    <div class="radio-option">
-                        <input type="radio" id="field_4_no" name="/data/mat_q/mat_q4" value="no">
-                        <label for="field_4_no">No</label>
-                    </div>
-                
-                    </div>
-                </div>
-            
-                <div class="form-group">
-                    <label>What is the plural of "book"?</label>
-                    <div class="radio-group">
+                        <div class="form-group">
+                            <label>What is the plural of "book"? <span class="required-star">*</span></label>
+                            <div class="radio-group">
+                                <div class="radio-option"><input type="radio" name="eng_q1" value="A"><label>A) book</label></div>
+                                <div class="radio-option"><input type="radio" name="eng_q1" value="B"><label>B) books</label></div>
+                                <div class="radio-option"><input type="radio" name="eng_q1" value="C"><label>C) booked</label></div>
+                                <div class="radio-option"><input type="radio" name="eng_q1" value="D"><label>D) bookes</label></div>
+                            </div>
+                        </div>
                         
-                    <div class="radio-option">
-                        <input type="radio" id="field_5_A" name="/data/eng_q/eng_q1" value="A">
-                        <label for="field_5_A">book</label>
-                    </div>
-                
-                    <div class="radio-option">
-                        <input type="radio" id="field_5_B" name="/data/eng_q/eng_q1" value="B">
-                        <label for="field_5_B">books</label>
-                    </div>
-                
-                    <div class="radio-option">
-                        <input type="radio" id="field_5_C" name="/data/eng_q/eng_q1" value="C">
-                        <label for="field_5_C">booked</label>
-                    </div>
-                
-                    <div class="radio-option">
-                        <input type="radio" id="field_5_D" name="/data/eng_q/eng_q1" value="D">
-                        <label for="field_5_D">bookes</label>
-                    </div>
-                
-                    </div>
-                </div>
-            
-                <div class="form-group">
-                    <label>How many letters are there in the alphabet?</label>
-                    <div class="radio-group">
+                        <div class="form-group">
+                            <label>How many letters are there in the alphabet? <span class="required-star">*</span></label>
+                            <div class="radio-group">
+                                <div class="radio-option"><input type="radio" name="eng_q2" value="A"><label>A) 5</label></div>
+                                <div class="radio-option"><input type="radio" name="eng_q2" value="B"><label>B) 26</label></div>
+                                <div class="radio-option"><input type="radio" name="eng_q2" value="C"><label>C) 20</label></div>
+                                <div class="radio-option"><input type="radio" name="eng_q2" value="D"><label>D) 21</label></div>
+                            </div>
+                        </div>
                         
-                    <div class="radio-option">
-                        <input type="radio" id="field_6_A" name="/data/eng_q/eng_q2" value="A">
-                        <label for="field_6_A">5</label>
-                    </div>
-                
-                    <div class="radio-option">
-                        <input type="radio" id="field_6_B" name="/data/eng_q/eng_q2" value="B">
-                        <label for="field_6_B">26</label>
-                    </div>
-                
-                    <div class="radio-option">
-                        <input type="radio" id="field_6_C" name="/data/eng_q/eng_q2" value="C">
-                        <label for="field_6_C">20</label>
-                    </div>
-                
-                    <div class="radio-option">
-                        <input type="radio" id="field_6_D" name="/data/eng_q/eng_q2" value="D">
-                        <label for="field_6_D">21</label>
-                    </div>
-                
-                    </div>
-                </div>
-            
-                <div class="form-group">
-                    <label>Do you read storybooks at home?</label>
-                    <div class="radio-group">
+                        <div class="form-group">
+                            <label for="eng_q3">Write a sentence using the word "handsome"</label>
+                            <textarea id="eng_q3" name="eng_q3" rows="2"></textarea>
+                        </div>
                         
-                    <div class="radio-option">
-                        <input type="radio" id="field_7_yes" name="/data/eng_q/eng_q4" value="yes">
-                        <label for="field_7_yes">Yes</label>
+                        <div class="form-group">
+                            <label>Do you read storybooks at home?</label>
+                            <div class="radio-group">
+                                <div class="radio-option"><input type="radio" name="eng_q4" value="yes"><label>Yes</label></div>
+                                <div class="radio-option"><input type="radio" name="eng_q4" value="no"><label>No</label></div>
+                            </div>
+                        </div>
                     </div>
-                
-                    <div class="radio-option">
-                        <input type="radio" id="field_7_no" name="/data/eng_q/eng_q4" value="no">
-                        <label for="field_7_no">No</label>
-                    </div>
-                
-                    </div>
-                </div>
-            
-                <div class="form-group">
-                    <label>Which planet is known as the red planet?</label>
-                    <div class="radio-group">
+                    
+                    <!-- Science -->
+                    <div id="scienceSection" style="display: none;">
+                        <div class="form-section">
+                            <h3>🔬 Science</h3>
+                        </div>
                         
-                    <div class="radio-option">
-                        <input type="radio" id="field_8_A" name="/data/scie_q/scie_q1" value="A">
-                        <label for="field_8_A">mars</label>
-                    </div>
-                
-                    <div class="radio-option">
-                        <input type="radio" id="field_8_B" name="/data/scie_q/scie_q1" value="B">
-                        <label for="field_8_B">jupiter</label>
-                    </div>
-                
-                    <div class="radio-option">
-                        <input type="radio" id="field_8_C" name="/data/scie_q/scie_q1" value="C">
-                        <label for="field_8_C">saturn</label>
-                    </div>
-                
-                    <div class="radio-option">
-                        <input type="radio" id="field_8_D" name="/data/scie_q/scie_q1" value="D">
-                        <label for="field_8_D">earth</label>
-                    </div>
-                
-                    </div>
-                </div>
-            
-                <div class="form-group">
-                    <label>What is the capital city of kenya?</label>
-                    <div class="radio-group">
+                        <div class="form-group">
+                            <label>Which planet is known as the red planet? <span class="required-star">*</span></label>
+                            <div class="radio-group">
+                                <div class="radio-option"><input type="radio" name="scie_q1" value="A"><label>A) Mars</label></div>
+                                <div class="radio-option"><input type="radio" name="scie_q1" value="B"><label>B) Jupiter</label></div>
+                                <div class="radio-option"><input type="radio" name="scie_q1" value="C"><label>C) Saturn</label></div>
+                                <div class="radio-option"><input type="radio" name="scie_q1" value="D"><label>D) Earth</label></div>
+                            </div>
+                        </div>
                         
-                    <div class="radio-option">
-                        <input type="radio" id="field_9_A" name="/data/sst_q/sst_q1" value="A">
-                        <label for="field_9_A">Mombasa</label>
-                    </div>
-                
-                    <div class="radio-option">
-                        <input type="radio" id="field_9_B" name="/data/sst_q/sst_q1" value="B">
-                        <label for="field_9_B">Kisumu</label>
-                    </div>
-                
-                    <div class="radio-option">
-                        <input type="radio" id="field_9_C" name="/data/sst_q/sst_q1" value="C">
-                        <label for="field_9_C">Nairobi</label>
-                    </div>
-                
-                    <div class="radio-option">
-                        <input type="radio" id="field_9_D" name="/data/sst_q/sst_q1" value="D">
-                        <label for="field_9_D">Nakuru</label>
-                    </div>
-                
-                    </div>
-                </div>
-            
-                <div class="form-group">
-                    <label>How many counties are there in kenya?</label>
-                    <div class="radio-group">
+                        <div class="form-group">
+                            <label for="scie_q2">Name one use of water in human life.</label>
+                            <input type="text" id="scie_q2" name="scie_q2">
+                        </div>
                         
-                    <div class="radio-option">
-                        <input type="radio" id="field_10_A" name="/data/sst_q/sst_q2" value="A">
-                        <label for="field_10_A">20</label>
-                    </div>
-                
-                    <div class="radio-option">
-                        <input type="radio" id="field_10_B" name="/data/sst_q/sst_q2" value="B">
-                        <label for="field_10_B">7</label>
-                    </div>
-                
-                    <div class="radio-option">
-                        <input type="radio" id="field_10_C" name="/data/sst_q/sst_q2" value="C">
-                        <label for="field_10_C">47</label>
-                    </div>
-                
-                    <div class="radio-option">
-                        <input type="radio" id="field_10_D" name="/data/sst_q/sst_q2" value="D">
-                        <label for="field_10_D">45</label>
-                    </div>
-                
-                    </div>
-                </div>
-            
-                <div class="form-group">
-                    <label>Select your subjects</label>
-                    <div class="checkbox-group">
+                        <div class="form-group">
+                            <label for="scie_q3">Name one source of vitamin C</label>
+                            <input type="text" id="scie_q3" name="scie_q3">
+                        </div>
                         
-                    <div class="checkbox-option">
-                        <input type="checkbox" id="field_11_mat" name="/data/student_section/sub_selection/subjects" value="mat">
-                        <label for="field_11_mat">Math</label>
+                        <div class="form-group">
+                            <label for="scie_q4">At what age does a child start shedding off their milk teeth?</label>
+                            <input type="text" id="scie_q4" name="scie_q4">
+                        </div>
                     </div>
+                    
+                    <!-- Social Studies -->
+                    <div id="sstSection" style="display: none;">
+                        <div class="form-section">
+                            <h3>🌍 Social Studies</h3>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>What is the capital city of Kenya? <span class="required-star">*</span></label>
+                            <div class="radio-group">
+                                <div class="radio-option"><input type="radio" name="sst_q1" value="A"><label>A) Mombasa</label></div>
+                                <div class="radio-option"><input type="radio" name="sst_q1" value="B"><label>B) Kisumu</label></div>
+                                <div class="radio-option"><input type="radio" name="sst_q1" value="C"><label>C) Nairobi</label></div>
+                                <div class="radio-option"><input type="radio" name="sst_q1" value="D"><label>D) Nakuru</label></div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>How many counties are there in Kenya? <span class="required-star">*</span></label>
+                            <div class="radio-group">
+                                <div class="radio-option"><input type="radio" name="sst_q2" value="A"><label>A) 20</label></div>
+                                <div class="radio-option"><input type="radio" name="sst_q2" value="B"><label>B) 7</label></div>
+                                <div class="radio-option"><input type="radio" name="sst_q2" value="C"><label>C) 47</label></div>
+                                <div class="radio-option"><input type="radio" name="sst_q2" value="D"><label>D) 45</label></div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="sst_q3">Name one traditional leader of any Kenyan community.</label>
+                            <input type="text" id="sst_q3" name="sst_q3">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="sst_q4">Which year did Kenya gain independence?</label>
+                            <input type="text" id="sst_q4" name="sst_q4">
+                        </div>
+                    </div>
+                </div>
                 
-                    <div class="checkbox-option">
-                        <input type="checkbox" id="field_11_eng" name="/data/student_section/sub_selection/subjects" value="eng">
-                        <label for="field_11_eng">English</label>
-                    </div>
-                
-                    <div class="checkbox-option">
-                        <input type="checkbox" id="field_11_scie" name="/data/student_section/sub_selection/subjects" value="scie">
-                        <label for="field_11_scie">Science</label>
-                    </div>
-                
-                    <div class="checkbox-option">
-                        <input type="checkbox" id="field_11_sst" name="/data/student_section/sub_selection/subjects" value="sst">
-                        <label for="field_11_sst">Social Studies</label>
-                    </div>
-                
-                    </div>
-                </div>
-            
-                <div class="form-group">
-                    <label for="field_12">Enter student Name</label>
-                    <input type="text" id="field_12" name="/data/student_section/student_name">
-                </div>
-            
-                <div class="form-group">
-                    <label for="field_13">Enter Admission Number</label>
-                    <input type="number" id="field_13" name="/data/student_section/adm_no">
-                </div>
-            
-                <div class="form-group">
-                    <label for="field_14">Teacher comment</label>
-                    <input type="text" id="field_14" name="/data/teacher_section/comment">
-                </div>
-            
-                <div class="form-group">
-                    <label for="field_15">Write one example of a fraction</label>
-                    <input type="text" id="field_15" name="/data/mat_q/mat_q3">
-                </div>
-            
-                <div class="form-group">
-                    <label for="field_16">Write a sentence using the word "handsome"</label>
-                    <input type="text" id="field_16" name="/data/eng_q/eng_q3">
-                </div>
-            
-                <div class="form-group">
-                    <label for="field_17">Name one use of water in human life.</label>
-                    <input type="text" id="field_17" name="/data/scie_q/scie_q2">
-                </div>
-            
-                <div class="form-group">
-                    <label for="field_18">Name one source of vitamin c</label>
-                    <input type="text" id="field_18" name="/data/scie_q/scie_q3">
-                </div>
-            
-                <div class="form-group">
-                    <label for="field_19">At what age does a child start shedding off their milk teeth?</label>
-                    <input type="text" id="field_19" name="/data/scie_q/scie_q4">
-                </div>
-            
-                <div class="form-group">
-                    <label for="field_20">Name one traditional leader of any kenyan community.</label>
-                    <input type="text" id="field_20" name="/data/sst_q/sst_q3">
-                </div>
-            
-                <div class="form-group">
-                    <label for="field_21">Which year did kenya gain independence?</label>
-                    <input type="text" id="field_21" name="/data/sst_q/sst_q4">
-                </div>
-            
-                <div class="form-section">
-                    <h3>📖 Mathematics</h3>
-                </div>
-            
-                <div class="form-section">
-                    <h3>📖 English</h3>
-                </div>
-            
-                <div class="form-section">
-                    <h3>📖 Science</h3>
-                </div>
-            
-                <div class="form-section">
-                    <h3>📖 Social Studies</h3>
-                </div>
-            
-                <button type="submit">✓ Submit</button>
+                <button type="submit" id="submitBtn">✓ Submit Exam / Approval</button>
             </form>
         </div>
         
         <div class="footer">
-            <p>Legacy Schools Exam Management System</p>
+            <p>Legacy Schools Exam Management System | Hosted on Vercel</p>
         </div>
     </div>
     
     <script>
+        // Conditional logic handler
+        const roleRadios = document.querySelectorAll('input[name="role"]');
+        const studentSection = document.getElementById('studentSection');
+        const teacherSection = document.getElementById('teacherSection');
+        const examSections = document.getElementById('examSections');
+        const mathSection = document.getElementById('mathSection');
+        const englishSection = document.getElementById('englishSection');
+        const scienceSection = document.getElementById('scienceSection');
+        const sstSection = document.getElementById('sstSection');
+        const subjectCheckboxes = document.querySelectorAll('input[name="subjects"]');
+        
+        // Update visibility based on role
+        function updateRoleSections() {
+            const selectedRole = document.querySelector('input[name="role"]:checked');
+            
+            if (selectedRole) {
+                if (selectedRole.value === 'student') {
+                    studentSection.style.display = 'block';
+                    teacherSection.style.display = 'none';
+                    examSections.style.display = 'block';
+                    // Make student fields required
+                    document.getElementById('student_name').required = true;
+                    document.getElementById('adm_no').required = true;
+                } else if (selectedRole.value === 'teacher') {
+                    studentSection.style.display = 'none';
+                    teacherSection.style.display = 'block';
+                    examSections.style.display = 'none';
+                    // Remove student field requirements
+                    document.getElementById('student_name').required = false;
+                    document.getElementById('adm_no').required = false;
+                }
+            } else {
+                studentSection.style.display = 'none';
+                teacherSection.style.display = 'none';
+                examSections.style.display = 'none';
+            }
+        }
+        
+        // Update subject sections based on checkboxes
+        function updateSubjectSections() {
+            const selectedSubjects = Array.from(subjectCheckboxes)
+                .filter(cb => cb.checked)
+                .map(cb => cb.value);
+            
+            mathSection.style.display = selectedSubjects.includes('mat') ? 'block' : 'none';
+            englishSection.style.display = selectedSubjects.includes('eng') ? 'block' : 'none';
+            scienceSection.style.display = selectedSubjects.includes('scie') ? 'block' : 'none';
+            sstSection.style.display = selectedSubjects.includes('sst') ? 'block' : 'none';
+        }
+        
+        // Add event listeners
+        roleRadios.forEach(radio => {
+            radio.addEventListener('change', updateRoleSections);
+        });
+        
+        subjectCheckboxes.forEach(cb => {
+            cb.addEventListener('change', updateSubjectSections);
+        });
+        
+        // Form submission
         document.getElementById('examForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
-            const formData = new FormData(this);
-            const data = {};
-            formData.forEach((value, key) => {
-                if (data[key]) {
-                    if (!Array.isArray(data[key])) {
-                        data[key] = [data[key]];
-                    }
-                    data[key].push(value);
-                } else {
-                    data[key] = value;
+            const submitBtn = document.getElementById('submitBtn');
+            const successDiv = document.getElementById('successMessage');
+            const errorDiv = document.getElementById('errorMessage');
+            
+            // Hide previous messages
+            successDiv.style.display = 'none';
+            errorDiv.style.display = 'none';
+            
+            // Check if required fields are filled
+            const requiredFields = document.querySelectorAll('[required]');
+            let isValid = true;
+            
+            requiredFields.forEach(field => {
+                if (!field.value) {
+                    isValid = false;
                 }
             });
             
-            data['_submitted_at'] = new Date().toISOString();
+            if (!isValid) {
+                errorDiv.style.display = 'block';
+                setTimeout(() => {
+                    errorDiv.style.display = 'none';
+                }, 3000);
+                return;
+            }
             
-            // Save and download
+            // Collect form data
+            const formData = new FormData(this);
+            const data = {};
+            
+            // Handle subjects (checkboxes)
+            data.subjects = Array.from(subjectCheckboxes)
+                .filter(cb => cb.checked)
+                .map(cb => cb.value);
+            
+            // Handle other fields
+            for (let [key, value] of formData.entries()) {
+                if (key !== 'subjects') {
+                    data[key] = value;
+                }
+            }
+            
+            // Add metadata
+            data['_submitted_at'] = new Date().toISOString();
+            data['_user_agent'] = navigator.userAgent;
+            
+            // Save to localStorage
+            const existing = JSON.parse(localStorage.getItem('exam_submissions') || '[]');
+            existing.push(data);
+            localStorage.setItem('exam_submissions', JSON.stringify(existing));
+            
+            // Create downloadable JSON
             const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `submission_${Date.now()}.json`;
+            a.download = `exam_submission_${Date.now()}.json`;
             a.click();
             URL.revokeObjectURL(url);
             
-            document.getElementById('successMessage').style.display = 'block';
+            // Show success message
+            successDiv.style.display = 'block';
+            
+            // Reset form after 3 seconds
             setTimeout(() => {
-                document.getElementById('successMessage').style.display = 'none';
+                successDiv.style.display = 'none';
                 this.reset();
+                // Reset visibility
+                studentSection.style.display = 'none';
+                teacherSection.style.display = 'none';
+                examSections.style.display = 'none';
+                mathSection.style.display = 'none';
+                englishSection.style.display = 'none';
+                scienceSection.style.display = 'none';
+                sstSection.style.display = 'none';
             }, 3000);
         });
+        
+        // Initial state
+        updateRoleSections();
+        updateSubjectSections();
     </script>
 </body>
 </html>
